@@ -14,8 +14,14 @@ app = Flask(__name__, template_folder=resource_path('templates'))
 def execute_ps(command):
     b64_cmd = base64.b64encode(command.encode('utf-16le')).decode('utf-8')
     inner_args = f"'-NoProfile', '-EncodedCommand', '{b64_cmd}'"
-    full_command = f'powershell -NoProfile -Command "Start-Process powershell -ArgumentList {inner_args} -Verb RunAs"'
-    subprocess.run(full_command, shell=True)
+
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startupinfo.wShowWindow = 0
+
+    full_command = f'powershell -NoProfile -ExecutionPolicy Bypass -Command ...'
+
+    subprocess.run(full_command, startupinfo=startupinfo, shell=False)
 
 @app.route('/')
 def index():

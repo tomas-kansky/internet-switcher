@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Control</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            background-color: #1a1a1a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .btn {
+            width: 85%;
+            max-width: 350px;
+            padding: 35px;
+            margin: 15px auto;
+            font-size: 24px;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+        .off { background-color: #d32f2f; }
+        .on { background-color: #388e3c; }
+        #status { margin-top: 20px; color: #888; }
+    </style>
+</head>
+<body>
+<h1>Internet Control</h1>
+<button class="btn off" onclick="run('/off')">DISCONNECT</button>
+<button class="btn on" onclick="run('/on')">CONNECT</button>
+<p id="status">Ready</p>
+
+<script>
+    function run(path) {
+        document.getElementById('status').innerText = "Sending...";
+        fetch(path)
+            .then(() => document.getElementById('status').innerText = "Command sent")
+            .catch(err => document.getElementById('status').innerText = "Error: " + err);
+    }
+</script>
+</body>
+</html>

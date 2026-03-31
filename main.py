@@ -12,16 +12,20 @@ def resource_path(relative_path):
 app = Flask(__name__, template_folder=resource_path('templates'))
 
 def execute_ps(command):
-    b64_cmd = base64.b64encode(command.encode('utf-16le')).decode('utf-8')
-    inner_args = f"'-NoProfile', '-EncodedCommand', '{b64_cmd}'"
-
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     startupinfo.wShowWindow = 0
 
-    full_command = f'powershell -NoProfile -ExecutionPolicy Bypass -Command ...'
+    encoded_command = base64.b64encode(command.encode('utf-16le')).decode('utf-8')
 
-    subprocess.run(full_command, startupinfo=startupinfo, shell=False)
+    full_command = f'powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand {encoded_command}'
+
+    subprocess.run(
+        full_command,
+        startupinfo=startupinfo,
+        creationflags=subprocess.CREATE_NO_WINDOW,
+        shell=False
+    )
 
 @app.route('/')
 def index():
